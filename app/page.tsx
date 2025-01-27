@@ -2,7 +2,7 @@ import { Button, Htag, P } from "../components/index";
 
 export default function Home() {
   return (
-    <div>
+    <>
       <Button appearence="primary" arrow="rigth">
         Button
       </Button>
@@ -14,6 +14,6 @@ export default function Home() {
         логотип новой компании, а завтра вполне можно переключиться на
         иллюстрацию культовой книги.
       </P>
-    </div>
+    </>
   );
 }
