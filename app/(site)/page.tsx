@@ -1,6 +1,8 @@
+import { getMenu } from "@/api/menu";
 import { Button, Htag, P } from "../../components/index";
 
-export default function Home() {
+export default async function Home() {
+  const menu = await getMenu(0);
   return (
     <>
       <Button appearence="primary" arrow="rigth">
@@ -14,6 +16,7 @@ export default function Home() {
         логотип новой компании, а завтра вполне можно переключиться на
         иллюстрацию культовой книги.
       </P>
+      <div>{menu.length}</div>
     </>
   );
 }

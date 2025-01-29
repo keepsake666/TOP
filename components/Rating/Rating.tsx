@@ -17,7 +17,7 @@ export const Rating = ({
 
   useEffect(() => {
     constructRating(rating);
-  }, [rating]);
+  });
 
   const constructRating = (currentRating: number) => {
     const updateArray = ratingArray.map((r: JSX.Element, i: number) => {
