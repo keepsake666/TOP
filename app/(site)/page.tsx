@@ -1,4 +1,3 @@
-import Menu from "@/components/menu/Menu";
 import { Button, Htag, P } from "../../components/index";
 
 export default async function Home() {
