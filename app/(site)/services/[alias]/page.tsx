@@ -3,12 +3,12 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Courses",
+  title: "Services",
 };
 
 type Params = Promise<{ alias: string }>;
 
-export default async function PageCourses({ params }: { params: Params }) {
+export default async function PageServices({ params }: { params: Params }) {
   const { alias } = await params;
   const page = await getPage(alias);
   if (!page) {
@@ -16,7 +16,7 @@ export default async function PageCourses({ params }: { params: Params }) {
   }
   return (
     <div>
-      <h1>Courses</h1>
+      <h1>Services</h1>
       <p>{page.title}</p>
     </div>
   );

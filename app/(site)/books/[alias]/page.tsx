@@ -16,7 +16,7 @@ export default async function PageCourses({ params }: { params: Params }) {
   }
   return (
     <div>
-      <h1>Courses</h1>
+      <h1>Books</h1>
       <p>{page.title}</p>
     </div>
   );
