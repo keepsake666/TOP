@@ -4,7 +4,7 @@ import cn from "classnames";
 import styles from "./layout.module.css";
 import "./globals.css";
 import { Footer } from "@/components";
-import Menu from "@/components/menu/Menu";
+import { Menu } from "@/components/menu/Menu";
 
 const notoSans = Noto_Sans_KR({
   subsets: ["latin"],
