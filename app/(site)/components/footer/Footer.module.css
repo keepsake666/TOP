@@ -1,0 +1,37 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  grid-area: footer;
+  padding: 25px 34px;
+  background-color: var(--primary);
+  color: var(--white);
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.containerText {
+  display: flex;
+}
+
+.text {
+  margin-right: 40px;
+}
+
+.text:last-child {
+  margin-right: 0;
+}
+
+@media (max-width: 765px) {
+  .footer {
+    flex-direction: column;
+  }
+
+  .containerText {
+    flex-direction: column;
+  }
+
+  .text {
+    margin-right: 0;
+    margin-top: 10px;
+  }
+}
