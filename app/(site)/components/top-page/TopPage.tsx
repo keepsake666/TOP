@@ -6,11 +6,11 @@ import styles from "./TopPage.module.css";
 
 import { notFound } from "next/navigation";
 import { HhData } from "../hh-data/HhData";
+import { Advantages } from "../advantages/Advantages";
 
 export default async function TopPage({
-  children,
   alias,
-  firstCategory = 0,
+  firstCategory,
 }: {
   children: React.ReactNode;
   alias: string;
@@ -18,7 +18,6 @@ export default async function TopPage({
 }) {
   const page = await getPage(alias);
   const products = await getMenu(firstCategory);
-
   if (!page && !products) {
     return notFound();
   }
@@ -33,17 +32,34 @@ export default async function TopPage({
         )}
         <span>Sort</span>
       </div>
-      <div style={{ border: "4px solid red" }}>{children}</div>
       <div className={styles.hhTitle}>
         {" "}
         <Htag tag="h2"> Вакансии - {page?.category} </Htag>
         {products && (
-          <Tag color="grey" size="m">
+          <Tag color="red" size="m">
             hh.ru
           </Tag>
         )}
       </div>
-      <HhData {...page?.hh}></HhData>
+      {page?.hh && <HhData {...page.hh}></HhData>}
+      {page?.advantages && page.advantages.length > 0 && (
+        <>
+          <Htag tag="h2">Преимущства</Htag>
+          <Advantages advantages={page.advantages} />
+        </>
+      )}
+      {page?.seoText && (
+        <div
+          className={styles.seo}
+          dangerouslySetInnerHTML={{ __html: page.seoText }}
+        />
+      )}
+      <Htag tag="h2">Получаемые навыки</Htag>
+      {page?.tags.map((t) => (
+        <Tag key={t} color="primary">
+          {t}
+        </Tag>
+      ))}
     </div>
   );
 }
