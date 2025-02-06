@@ -35,6 +35,6 @@
   line-height: 22px;
 }
 
-.sort button:not(.active) {
+.sort span:not(.active) {
   grid-template-columns: 1fr;
 }

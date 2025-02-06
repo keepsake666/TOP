@@ -1,4 +1,3 @@
-"use client";
 import styles from "./Sort.module.css";
 import SortIcon from "./sort.svg";
 import cn from "classnames";

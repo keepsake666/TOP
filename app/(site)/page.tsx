@@ -1,4 +1,4 @@
-import { Button, Htag, P } from "../../components/index";
+import { Button, Htag, Input, P, Textarea } from "../../components/index";
 
 export default async function Home() {
   return (
@@ -14,6 +14,8 @@ export default async function Home() {
         логотип новой компании, а завтра вполне можно переключиться на
         иллюстрацию культовой книги.
       </P>
+      <Input />
+      <Textarea />
     </>
   );
 }
