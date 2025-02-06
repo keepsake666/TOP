@@ -1,7 +1,7 @@
 import { priceRu } from '@/helpers/helpers';
 import { Card } from "../card/Card";
 import { HhDataProps } from "./HhData.props";
-import styles from "./hhData.module.css";
+import styles from "./HhData.module.css";
 import RateIcon from "./rate.svg";
 
 export const HhData = ({
