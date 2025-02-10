@@ -1,4 +1,13 @@
 module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "old-images.hb.ru-msk.vkcs.cloud",
+        search: "",
+      },
+    ],
+  },
   webpack(config) {
     const fileLoaderRule = config.module.rules.find((rule) =>
       rule.test?.test?.(".svg")

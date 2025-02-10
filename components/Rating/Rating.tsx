@@ -17,12 +17,12 @@ export const Rating = ({
 
   useEffect(() => {
     constructRating(rating);
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rating]);
 
   const constructRating = (currentRating: number) => {
     const updateArray = ratingArray.map((r: JSX.Element, i: number) => {
       return (
-        // eslint-disable-next-line react/jsx-key
         <span
           className={cn(styles.star, {
             [styles.filled]: i < currentRating,
@@ -31,6 +31,7 @@ export const Rating = ({
           onMouseEnter={() => changeDisplay(i + 1)}
           onMouseLeave={() => changeDisplay(rating)}
           onClick={() => onClick(i + 1)}
+          key={i}
         >
           <StarIcon
             tabIndex={isAditable ? 0 : -1}

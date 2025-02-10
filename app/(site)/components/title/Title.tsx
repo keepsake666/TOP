@@ -8,12 +8,16 @@ import cn from "classnames";
 import { TitleProps } from "./Title.props";
 import { useReducer } from "react";
 import { sortReducer } from "@/helpers/helpers";
+import { Product } from "../product/Product";
 
 export const Title = ({ page, products, className, ...props }: TitleProps) => {
-  const [{ products: sortedProducts, sort }, dispatchSort] = useReducer(sortReducer, {
-    products,
-    sort: SortEnum.Rating,
-  });
+  const [{ products: sortedProducts, sort }, dispatchSort] = useReducer(
+    sortReducer,
+    {
+      products,
+      sort: SortEnum.Rating,
+    }
+  );
 
   const setSort = (sort: SortEnum) => {
     dispatchSort({ type: sort });
@@ -30,7 +34,10 @@ export const Title = ({ page, products, className, ...props }: TitleProps) => {
         )}
         <Sort sort={sort} setSort={setSort}></Sort>
       </div>
-      <div>{page && products.map((p) => <div key={p._id}>{p.title}</div>)}</div>
+      <div>
+        {page &&
+          products.map((p) => <Product key={p._id} product={p}></Product>)}
+      </div>
     </>
   );
 };
