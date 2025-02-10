@@ -16,7 +16,7 @@ a {
   box-sizing: border-box;
 }
 
-.visualyHidden {
+.visualy__hidden {
   position: absolute;
   overflow: hidden;
   width: 0;
