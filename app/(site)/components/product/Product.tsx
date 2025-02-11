@@ -7,12 +7,20 @@ import { declOfNum, priceRu } from "@/helpers/helpers";
 import { Divider } from "../driver/Driver";
 import cn from "classnames";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Review } from "../review/Review";
 import { ReviewForm } from "../review-form/ReviewForm";
 
 export const Product = ({ product, className, ...props }: ProductProps) => {
   const [isReviewOpeden, setIsReviewOpeden] = useState<boolean>(false);
+  const reviewRef = useRef<HTMLDivElement>(null);
+  const screllToReview = () => {
+    setIsReviewOpeden(true);
+    reviewRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
   return (
     <div className={className} {...props}>
       <Card className={styles.product}>
@@ -61,7 +69,7 @@ export const Product = ({ product, className, ...props }: ProductProps) => {
           кредит{" "}
         </div>
         <div className={styles.rateTitle}>
-          <a href="#ref">
+          <a href="#ref" onClick={screllToReview}>
             {product.reviewCount}{" "}
             {declOfNum(product.reviewCount, ["отзыв", "отзыва", "отзывов"])}
           </a>
@@ -110,6 +118,7 @@ export const Product = ({ product, className, ...props }: ProductProps) => {
           [styles.opened]: isReviewOpeden,
           [styles.closed]: !isReviewOpeden,
         })}
+        ref={reviewRef}
       >
         {product.reviews.map((r) => (
           <div key={r._id}>

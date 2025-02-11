@@ -1,7 +1,7 @@
 "use client";
 import { getMenu } from "@/api/menu";
 import styles from "./Menu.module.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FirstLevelMenuItem,
   MenuItem,
@@ -12,13 +12,65 @@ import cn from "classnames";
 import { TopLevelCategory } from "@/interfaces/page.interface";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export function Menu() {
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const firstCategory = TopLevelCategory.Courses;
+  const [firstCategory, setFirstCategory] = useState<TopLevelCategory>(
+    TopLevelCategory.Courses
+  );
   const pathname = usePathname();
+
+  const variants = {
+    visible: {
+      marginBottom: 20,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+      },
+    },
+    hidden: {
+      marginBottom: 0,
+    },
+  };
+
+  const variantsChildren = {
+    visible: {
+      opacity: 1,
+      height: "auto",
+    },
+    hidden: {
+      opacity: 0,
+      height: 0,
+    },
+  };
+
+  const fetchMenu = useCallback(async (category: TopLevelCategory) => {
+    setLoading(true);
+    try {
+      const res = await getMenu(category);
+      setMenu(res);
+      setError(null);
+    } catch (err) {
+      setError(`Ошибка загрузки меню: ${err}`);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMenu(firstCategory);
+  }, [firstCategory, fetchMenu]);
+
+  const handleFirstLevelClick = useCallback(
+    (category: TopLevelCategory) => {
+      setFirstCategory(category);
+      fetchMenu(category);
+    },
+    [fetchMenu]
+  );
 
   const openSecondLevel = (secondCategory: string) => {
     setMenu((prevMenu) =>
@@ -30,21 +82,6 @@ export function Menu() {
     );
   };
 
-  useEffect(() => {
-    const fetchMenu = async () => {
-      try {
-        const res = await getMenu(firstCategory);
-        setMenu(res);
-      } catch (err) {
-        setError(`Ошибка загрузки меню ${err}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMenu();
-  }, [firstCategory]);
-
   const buildFirstLevel = () => (
     <>
       {firstLevelMenu.map((m) => (
@@ -54,6 +91,7 @@ export function Menu() {
               className={cn(styles.firstLevel, {
                 [styles.firstLevelActive]: m.id === firstCategory,
               })}
+              onClick={() => handleFirstLevelClick(m.id)}
             >
               {m.icon}
               <span>{m.name}</span>
@@ -68,10 +106,13 @@ export function Menu() {
   const buildSecondLevel = (menuItem: FirstLevelMenuItem) => (
     <div className={styles.secondBlock}>
       {menu.map((m) => {
-        // Проверяем, активен ли данный элемент
         const isActive = m.pages.some(
           (p) => p.alias === pathname.split("/")[2]
         );
+        if (isActive) {
+          m.isOpened = true;
+        }
+
         return (
           <div key={m._id.secondCategory}>
             <div
@@ -80,13 +121,15 @@ export function Menu() {
             >
               {m._id.secondCategory}
             </div>
-            <div
-              className={cn(styles.secondLevelBlock, {
-                [styles.secondLevelBlockOpen]: isActive || m.isOpened,
-              })}
+            <motion.div
+              layout
+              variants={variants}
+              initial={m.isOpened ? "visible" : "hidden"}
+              animate={m.isOpened ? "visible" : "hidden"}
+              className={cn(styles.secondLevelBlock)}
             >
-              {m.isOpened && buildThirdLevel(m.pages, menuItem.route)}
-            </div>
+              {buildThirdLevel(m.pages, menuItem.route)}{" "}
+            </motion.div>
           </div>
         );
       })}
@@ -95,24 +138,20 @@ export function Menu() {
 
   const buildThirdLevel = (pages: PageItem[], route: string) =>
     pages.map((p) => (
-      <Link
-        key={p._id}
-        href={`/${route}/${p.alias}`}
-        className={cn(styles.thirdLevel, {
-          [styles.thirdLevelActive]: `/${route}/${p.alias}` === pathname,
-        })}
-      >
-        {p.category}
-      </Link>
+      <motion.div key={p._id} variants={variantsChildren}>
+        <Link
+          href={`/${route}/${p.alias}`}
+          className={cn(styles.thirdLevel, {
+            [styles.thirdLevelActive]: `/${route}/${p.alias}` === pathname,
+          })}
+        >
+          {p.category}
+        </Link>
+      </motion.div>
     ));
 
-  if (loading) {
-    return <div className={styles.menu}>Загрузка...</div>;
-  }
-
-  if (error) {
-    return <div className={styles.menu}>{error}</div>;
-  }
+  if (loading) return <div className={styles.menu}>Загрузка...</div>;
+  if (error) return <div className={styles.menu}>{error}</div>;
 
   return <div className={styles.menu}>{buildFirstLevel()}</div>;
 }
