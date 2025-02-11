@@ -9,6 +9,7 @@ export const Rating = ({
   isAditable = false,
   rating,
   setRating,
+  error,
   ...props
 }: RatingProps) => {
   const [ratingArray, setRatingArray] = useState<JSX.Element[]>(
@@ -67,10 +68,16 @@ export const Rating = ({
   };
 
   return (
-    <div {...props}>
+    <div
+      {...props}
+      className={cn(styles.wrapper, {
+        [styles.error]: error,
+      })}
+    >
       {ratingArray.map((r, i) => (
         <span key={i}>{r}</span>
       ))}
+      {error && <span className={styles.errorMessage}>{error.message} </span>}
     </div>
   );
 };

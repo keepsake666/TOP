@@ -5,9 +5,14 @@ import styles from "./Product.module.css";
 import { ProductProps } from "./Product.props";
 import { declOfNum, priceRu } from "@/helpers/helpers";
 import { Divider } from "../driver/Driver";
+import cn from "classnames";
 import Image from "next/image";
+import { useState } from "react";
+import { Review } from "../review/Review";
+import { ReviewForm } from "../review-form/ReviewForm";
 
 export const Product = ({ product, className, ...props }: ProductProps) => {
+  const [isReviewOpeden, setIsReviewOpeden] = useState<boolean>(false);
   return (
     <div className={className} {...props}>
       <Card className={styles.product}>
@@ -91,12 +96,28 @@ export const Product = ({ product, className, ...props }: ProductProps) => {
           <Button appearence="primary">Узнать подробнее</Button>
           <Button
             appearence="ghost"
-            arrow="rigth"
+            arrow={isReviewOpeden ? "down" : "rigth"}
             className={styles.reviewButton}
+            onClick={() => setIsReviewOpeden(!isReviewOpeden)}
           >
             Читать отзывы
           </Button>
         </div>
+      </Card>
+      <Card
+        color="blue"
+        className={cn(styles.reviews, {
+          [styles.opened]: isReviewOpeden,
+          [styles.closed]: !isReviewOpeden,
+        })}
+      >
+        {product.reviews.map((r) => (
+          <div key={r._id}>
+            <Review review={r} />
+            <Divider />
+          </div>
+        ))}
+        <ReviewForm productId={product._id} />
       </Card>
     </div>
   );
