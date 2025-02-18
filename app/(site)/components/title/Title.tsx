@@ -36,7 +36,9 @@ export const Title = ({ page, products, className, ...props }: TitleProps) => {
       </div>
       <div>
         {page &&
-          products.map((p) => <Product key={p._id} product={p}></Product>)}
+          products.map((p) => (
+            <Product layout key={p._id} product={p}></Product>
+          ))}
       </div>
     </>
   );
