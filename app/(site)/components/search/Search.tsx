@@ -23,18 +23,19 @@ export const Search = ({ className, ...props }: SearchProps) => {
   };
 
   return (
-    <form className={cn(styles.search, className)} {...props} role="search">
+    <form className={cn(className, styles.search)} {...props} role="search">
       <Input
         className={styles.input}
         placeholder="Поиск..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onKeyDown={handleKeyDown}
-      ></Input>
+      />
       <Button
         appearence="primary"
         className={styles.button}
         onClick={goToSearch}
+        aria-label="Искать по сайту"
       >
         <GlassIcon />
       </Button>

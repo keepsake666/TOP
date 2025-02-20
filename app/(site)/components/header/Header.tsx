@@ -5,11 +5,13 @@ import Logo from "../sidebar/logo.svg";
 import { ButtonIcon } from "../button-icon/ButtonIcon";
 import { motion, useReducedMotion } from "framer-motion";
 import { Sidebar } from "../sidebar/Sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export const Header = ({ ...props }: HeaderProps) => {
   const [isOpened, setIsOpened] = useState<boolean>(false);
   const shouldReduceMotion = useReducedMotion();
+  const path = usePathname();
   const variants = {
     opened: {
       opacity: 1,
@@ -23,7 +25,9 @@ export const Header = ({ ...props }: HeaderProps) => {
       x: "100%",
     },
   };
-
+  useEffect(() => {
+    setIsOpened(false);
+  }, [path]);
   return (
     <header className={styles.header} {...props}>
       <Logo />
@@ -32,7 +36,12 @@ export const Header = ({ ...props }: HeaderProps) => {
         icon="menu"
         onClick={() => setIsOpened(true)}
       />
-      <motion.div className={styles.mobileMenu}>
+      <motion.div
+        className={styles.mobileMenu}
+        variants={variants}
+        initial={"closed"}
+        animate={isOpened ? "opened" : "closed"}
+      >
         <Sidebar />
         <ButtonIcon
           className={styles.menuClose}
