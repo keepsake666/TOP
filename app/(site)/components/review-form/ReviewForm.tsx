@@ -27,7 +27,6 @@ export const ReviewForm = ({
   const onSubmit = async (formData: IReviewForm) => {
     try {
       const data = await postDemo(productId, formData);
-      console.log(data);
       if (data.message) {
         setIsSuccess(true);
         reset();

@@ -22,6 +22,7 @@ export const Product = motion(
         behavior: "smooth",
         block: "start",
       });
+      reviewRef.current?.focus();
     };
 
     return (
@@ -116,6 +117,7 @@ export const Product = motion(
           </div>
         </Card>
         <Card
+          tabIndex={isReviewOpeden ? 0 : -1}
           color="blue"
           className={cn(styles.reviews, {
             [styles.opened]: isReviewOpeden,

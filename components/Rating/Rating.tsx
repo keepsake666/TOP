@@ -33,13 +33,10 @@ export const Rating = ({
           onMouseLeave={() => changeDisplay(rating)}
           onClick={() => onClick(i + 1)}
           key={i}
+          tabIndex={isAditable ? 0 : -1}
+          onKeyDown={handleKey}
         >
-          <StarIcon
-            tabIndex={isAditable ? 0 : -1}
-            onKeyDown={(e: KeyboardEvent<SVGElement>) =>
-              isAditable && handleSpace(i + 1, e)
-            }
-          />
+          <StarIcon />
         </span>
       );
     });
@@ -60,11 +57,22 @@ export const Rating = ({
     setRating(i);
   };
 
-  const handleSpace = (i: number, e: KeyboardEvent<SVGElement>) => {
-    if (e.code != "Space" || !setRating) {
+  const handleKey = (e: KeyboardEvent) => {
+    if (!isAditable || !setRating) {
       return;
     }
-    setRating(i);
+    if (e.code == "ArrowRight" || e.code == "ArrowUp") {
+      if (!rating) {
+        setRating(1);
+      } else {
+        e.preventDefault();
+        setRating(rating < 5 ? rating + 1 : 5);
+      }
+    }
+    if (e.code == "ArrowLeft" || e.code == "ArrowDown") {
+      e.preventDefault();
+      setRating(rating > 1 ? rating - 1 : 1);
+    }
   };
 
   return (
