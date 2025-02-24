@@ -10,7 +10,11 @@ export const Input = ({ className, error, ...props }: InputProps) => {
         className={cn(styles.input, { [styles.error]: error })}
         {...props}
       />
-      {error && <span className={styles.errorMessage}>{error.message} </span>}
+      {error && (
+        <span role="alert" className={styles.errorMessage}>
+          {error.message}{" "}
+        </span>
+      )}
     </div>
   );
 };

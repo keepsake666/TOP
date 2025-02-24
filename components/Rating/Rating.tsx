@@ -35,6 +35,12 @@ export const Rating = ({
           key={i}
           tabIndex={isAditable ? 0 : -1}
           onKeyDown={handleKey}
+          role={isAditable ? "slider" : ""}
+          aria-invalid={error ? true : false}
+          aria-valuenow={rating}
+          aria-valuemin={1}
+          aria-valuemax={5}
+          aria-label={isAditable ? "Укажите рейтинг" : "рейтинг"}
         >
           <StarIcon />
         </span>
@@ -85,7 +91,11 @@ export const Rating = ({
       {ratingArray.map((r, i) => (
         <span key={i}>{r}</span>
       ))}
-      {error && <span className={styles.errorMessage}>{error.message} </span>}
+      {error && (
+        <span role="alert" className={styles.errorMessage}>
+          {error.message}{" "}
+        </span>
+      )}
     </div>
   );
 };

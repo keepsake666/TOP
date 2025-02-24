@@ -169,5 +169,9 @@ export function Menu() {
   if (loading) return <div className={styles.menu}>Загрузка...</div>;
   if (error) return <div className={styles.menu}>{error}</div>;
 
-  return <div className={styles.menu}>{buildFirstLevel()}</div>;
+  return (
+    <nav role="navigation" className={styles.menu}>
+      {buildFirstLevel()}
+    </nav>
+  );
 }
