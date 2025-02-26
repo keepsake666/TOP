@@ -7,6 +7,7 @@
   border: none;
   border-radius: 5px;
   font-size: 14px;
+  /* stylelint-disable-next-line declaration-property-value-no-unknown */
   transition: all 0.2;
 }
 
@@ -42,5 +43,6 @@
 
 .down {
   transform: rotate(90deg);
+  /* stylelint-disable-next-line declaration-property-value-no-unknown */
   transition: all 0.3;
 }

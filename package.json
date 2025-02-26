@@ -3,19 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prepare": "husky install",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "stylelint": "stylelint \"**/*.css\" --fix"
   },
   "dependencies": {
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.4.2",
+    "husky": "^9.1.7",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-hook-form": "^7.54.2"
+    "react-hook-form": "^7.54.2",
+    "react-yandex-metrika": "^2.6.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -25,6 +29,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
+    "stylelint": "^16.14.1",
+    "stylelint-config-standard": "^37.0.0",
     "typescript": "^5"
   }
 }

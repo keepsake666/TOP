@@ -90,9 +90,9 @@ export function Menu() {
   };
 
   const buildFirstLevel = () => (
-    <>
+    <ul className={styles.firstLevelList}>
       {firstLevelMenu.map((m) => (
-        <div key={m.route}>
+        <li key={m.route}>
           <Link href={`/${m.route}`}>
             <div
               className={cn(styles.firstLevel, {
@@ -105,9 +105,9 @@ export function Menu() {
             </div>
           </Link>
           {m.id === firstCategory && buildSecondLevel(m)}
-        </div>
+        </li>
       ))}
-    </>
+    </ul>
   );
 
   const buildSecondLevel = (menuItem: FirstLevelMenuItem) => (
@@ -129,10 +129,11 @@ export function Menu() {
               }
               className={styles.secondLevel}
               onClick={() => openSecondLevel(m._id.secondCategory)}
+              aria-expanded={m.isOpened}
             >
               {m._id.secondCategory}
             </button>
-            <motion.div
+            <motion.ul
               layout
               variants={variants}
               initial={m.isOpened ? "visible" : "hidden"}
@@ -140,7 +141,7 @@ export function Menu() {
               className={cn(styles.secondLevelBlock)}
             >
               {buildThirdLevel(m.pages, menuItem.route, m.isOpened ?? false)}{" "}
-            </motion.div>
+            </motion.ul>
           </li>
         );
       })}
@@ -153,7 +154,7 @@ export function Menu() {
     isOpened: boolean
   ) =>
     pages.map((p) => (
-      <motion.div key={p._id} variants={variantsChildren}>
+      <motion.li key={p._id} variants={variantsChildren}>
         <Link
           tabIndex={isOpened ? 0 : -1}
           href={`/${route}/${p.alias}`}
@@ -163,7 +164,7 @@ export function Menu() {
         >
           {p.category}
         </Link>
-      </motion.div>
+      </motion.li>
     ));
 
   if (loading) return <div className={styles.menu}>Загрузка...</div>;

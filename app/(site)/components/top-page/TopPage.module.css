@@ -1,8 +1,7 @@
 .hhTitle {
   display: grid;
   grid-template-columns: auto 1fr;
-  align-items: baseline;
-  justify-items: left;
+  place-items: baseline left;
   gap: 20px;
 }
 
