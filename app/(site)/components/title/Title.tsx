@@ -28,7 +28,11 @@ export const Title = ({ page, products, className, ...props }: TitleProps) => {
       <div className={cn(styles.title, className)} {...props}>
         <Htag tag="h1"> {page?.title} </Htag>
         {sortedProducts && (
-          <Tag color="grey" size="m">
+          <Tag
+            color="grey"
+            size="m"
+            aria-label={sortedProducts.length + "элементов"}
+          >
             {sortedProducts.length}
           </Tag>
         )}
@@ -36,7 +40,9 @@ export const Title = ({ page, products, className, ...props }: TitleProps) => {
       </div>
       <div>
         {page &&
-          products.map((p) => <Product key={p._id} product={p}></Product>)}
+          products.map((p) => (
+            <Product layout key={p._id} product={p}></Product>
+          ))}
       </div>
     </>
   );

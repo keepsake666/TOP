@@ -1,7 +1,7 @@
 "use client";
 import { getMenu } from "@/api/menu";
 import styles from "./Menu.module.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, KeyboardEvent } from "react";
 import {
   FirstLevelMenuItem,
   MenuItem,
@@ -12,13 +12,72 @@ import cn from "classnames";
 import { TopLevelCategory } from "@/interfaces/page.interface";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export function Menu() {
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const firstCategory = TopLevelCategory.Courses;
+  const [firstCategory, setFirstCategory] = useState<TopLevelCategory>(
+    TopLevelCategory.Courses
+  );
   const pathname = usePathname();
+
+  const openSecondLevelKey = (key: KeyboardEvent, secondCategory: string) => {
+    if (key.code == "Space" || key.code == "Enter") {
+      key.preventDefault();
+      openSecondLevel(secondCategory);
+    }
+  };
+
+  const variants = {
+    visible: {
+      marginBottom: 20,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+      },
+    },
+    hidden: {
+      marginBottom: 0,
+    },
+  };
+
+  const variantsChildren = {
+    visible: {
+      opacity: 1,
+      height: "auto",
+    },
+    hidden: {
+      opacity: 0,
+      height: 0,
+    },
+  };
+
+  const fetchMenu = useCallback(async (category: TopLevelCategory) => {
+    setLoading(true);
+    try {
+      const res = await getMenu(category);
+      setMenu(res);
+      setError(null);
+    } catch (err) {
+      setError(`Ошибка загрузки меню: ${err}`);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMenu(firstCategory);
+  }, [firstCategory, fetchMenu]);
+
+  const handleFirstLevelClick = useCallback(
+    (category: TopLevelCategory) => {
+      setFirstCategory(category);
+      fetchMenu(category);
+    },
+    [fetchMenu]
+  );
 
   const openSecondLevel = (secondCategory: string) => {
     setMenu((prevMenu) =>
@@ -30,89 +89,90 @@ export function Menu() {
     );
   };
 
-  useEffect(() => {
-    const fetchMenu = async () => {
-      try {
-        const res = await getMenu(firstCategory);
-        setMenu(res);
-      } catch (err) {
-        setError(`Ошибка загрузки меню ${err}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMenu();
-  }, [firstCategory]);
-
   const buildFirstLevel = () => (
-    <>
+    <ul className={styles.firstLevelList}>
       {firstLevelMenu.map((m) => (
-        <div key={m.route}>
+        <li key={m.route}>
           <Link href={`/${m.route}`}>
             <div
               className={cn(styles.firstLevel, {
                 [styles.firstLevelActive]: m.id === firstCategory,
               })}
+              onClick={() => handleFirstLevelClick(m.id)}
             >
               {m.icon}
               <span>{m.name}</span>
             </div>
           </Link>
           {m.id === firstCategory && buildSecondLevel(m)}
-        </div>
+        </li>
       ))}
-    </>
+    </ul>
   );
 
   const buildSecondLevel = (menuItem: FirstLevelMenuItem) => (
-    <div className={styles.secondBlock}>
+    <ul className={styles.secondBlock}>
       {menu.map((m) => {
-        // Проверяем, активен ли данный элемент
         const isActive = m.pages.some(
           (p) => p.alias === pathname.split("/")[2]
         );
+        if (isActive) {
+          m.isOpened = true;
+        }
+
         return (
-          <div key={m._id.secondCategory}>
-            <div
+          <li key={m._id.secondCategory}>
+            <button
+              tabIndex={0}
+              onKeyDown={(key: KeyboardEvent) =>
+                openSecondLevelKey(key, m._id.secondCategory)
+              }
               className={styles.secondLevel}
               onClick={() => openSecondLevel(m._id.secondCategory)}
+              aria-expanded={m.isOpened}
             >
               {m._id.secondCategory}
-            </div>
-            <div
-              className={cn(styles.secondLevelBlock, {
-                [styles.secondLevelBlockOpen]: isActive || m.isOpened,
-              })}
+            </button>
+            <motion.ul
+              layout
+              variants={variants}
+              initial={m.isOpened ? "visible" : "hidden"}
+              animate={m.isOpened ? "visible" : "hidden"}
+              className={cn(styles.secondLevelBlock)}
             >
-              {m.isOpened && buildThirdLevel(m.pages, menuItem.route)}
-            </div>
-          </div>
+              {buildThirdLevel(m.pages, menuItem.route, m.isOpened ?? false)}{" "}
+            </motion.ul>
+          </li>
         );
       })}
-    </div>
+    </ul>
   );
 
-  const buildThirdLevel = (pages: PageItem[], route: string) =>
+  const buildThirdLevel = (
+    pages: PageItem[],
+    route: string,
+    isOpened: boolean
+  ) =>
     pages.map((p) => (
-      <Link
-        key={p._id}
-        href={`/${route}/${p.alias}`}
-        className={cn(styles.thirdLevel, {
-          [styles.thirdLevelActive]: `/${route}/${p.alias}` === pathname,
-        })}
-      >
-        {p.category}
-      </Link>
+      <motion.li key={p._id} variants={variantsChildren}>
+        <Link
+          tabIndex={isOpened ? 0 : -1}
+          href={`/${route}/${p.alias}`}
+          className={cn(styles.thirdLevel, {
+            [styles.thirdLevelActive]: `/${route}/${p.alias}` === pathname,
+          })}
+        >
+          {p.category}
+        </Link>
+      </motion.li>
     ));
 
-  if (loading) {
-    return <div className={styles.menu}>Загрузка...</div>;
-  }
+  if (loading) return <div className={styles.menu}>Загрузка...</div>;
+  if (error) return <div className={styles.menu}>{error}</div>;
 
-  if (error) {
-    return <div className={styles.menu}>{error}</div>;
-  }
-
-  return <div className={styles.menu}>{buildFirstLevel()}</div>;
+  return (
+    <nav role="navigation" className={styles.menu}>
+      {buildFirstLevel()}
+    </nav>
+  );
 }

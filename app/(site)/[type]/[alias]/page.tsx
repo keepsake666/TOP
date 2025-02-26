@@ -4,6 +4,14 @@ import TopPage from "../../components/top-page/TopPage";
 
 type Params = Promise<{ alias: string; type: string }>;
 
+export async function generateMetadata({ params }: { params: Params }) {
+  const { alias } = await params;
+  const page = await getPage(alias);
+  return {
+    title: page?.title,
+  };
+}
+
 export default async function PageProducts({ params }: { params: Params }) {
   const { alias, type } = await params;
 
