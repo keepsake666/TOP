@@ -9,7 +9,7 @@
 - Верстка сайта выполнена с применением технологий Flexbox и ”Grid Layout“;
 - Проект создан на NextJS с применением хуков и типизорован с помощью TypeScript;
 
-[Проект на github pages](https://top-vert.vercel.app).
+[Проект на vercel](https://top-vert.vercel.app).
 
 ## Установка и запуск в режиме разработки
 
